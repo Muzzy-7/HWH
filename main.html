@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doc-Intelligent Agent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-input-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            height: 100%;
+        }
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-left-color: #4f46e5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 antialiased">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center space-x-3">
+                        <svg class="h-8 w-8 text-indigo-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <h1 class="text-xl font-bold text-white">Doc-Intelligent Agent</h1>
+                    </div>
+                    <!-- Flexprice Integration Requirement -->
+                    <div class="flex items-center space-x-6 text-sm">
+                        <div class="text-center">
+                            <span class="font-semibold text-white" id="docs-checked-count">0</span>
+                            <span class="block text-xs text-gray-400">Docs Analyzed</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="font-semibold text-white" id="reports-made-count">0</span>
+                            <span class="block text-xs text-gray-400">Reports Generated</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                    
+                    <!-- Left Column: Controls -->
+                    <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                        <h2 class="text-lg font-semibold mb-4 text-white">1. Upload Documents</h2>
+                        <div id="file-upload-container" class="space-y-4">
+                            <!-- File Upload 1 -->
+                            <div class="file-input-wrapper w-full bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-3 px-4 rounded-md transition-colors duration-300">
+                                <div class="file-input-display" id="file-display-1">
+                                    <i data-lucide="upload-cloud"></i>
+                                    <span>Upload Document 1</span>
+                                </div>
+                                <input type="file" id="file-input-1">
+                            </div>
+                             <!-- File Upload 2 -->
+                            <div class="file-input-wrapper w-full bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-3 px-4 rounded-md transition-colors duration-300">
+                                <div class="file-input-display" id="file-display-2">
+                                    <i data-lucide="upload-cloud"></i>
+                                    <span>Upload Document 2</span>
+                                </div>
+                                <input type="file" id="file-input-2">
+                            </div>
+                             <!-- File Upload 3 -->
+                            <div class="file-input-wrapper w-full bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-3 px-4 rounded-md transition-colors duration-300">
+                                <div class="file-input-display" id="file-display-3">
+                                   <i data-lucide="upload-cloud"></i>
+                                    <span>Upload Document 3</span>
+                                </div>
+                                <input type="file" id="file-input-3">
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button id="add-document-button" class="w-full bg-gray-700/50 hover:bg-gray-700 border border-gray-600 text-gray-300 font-semibold py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center gap-2">
+                                <i data-lucide="plus"></i>
+                                <span>Add Document</span>
+                            </button>
+                        </div>
+
+                        <!-- Pathway Integration Requirement -->
+                        <h2 class="text-lg font-semibold mt-8 mb-4 text-white">2. Monitor External Source (Pathway)</h2>
+                         <div class="relative">
+                            <i data-lucide="link" class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"></i>
+                            <input type="text" id="external-url" class="w-full bg-gray-700 text-white pl-10 pr-4 py-2.5 rounded-md border border-gray-600 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="e.g., https://college.edu/policy-updates">
+                        </div>
+                        <p class="text-xs text-gray-400 mt-2">Pathway will monitor this URL for changes and trigger a re-analysis if updates are found.</p>
+
+                        <button id="analyze-button" class="mt-8 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 shadow-lg hover:shadow-indigo-500/50">
+                            <i data-lucide="zap"></i>
+                            <span>Find Contradictions</span>
+                        </button>
+                         <p id="error-message" class="text-red-400 text-center mt-4 text-sm hidden"></p>
+                    </div>
+
+                    <!-- Right Column: Results -->
+                    <div id="results-panel" class="bg-gray-800/50 p-6 rounded-lg border border-dashed border-gray-700 flex items-center justify-center flex-col min-h-[400px]">
+                        <div id="placeholder" class="text-center text-gray-500">
+                            <i data-lucide="file-search-2" class="h-16 w-16 mx-auto"></i>
+                            <h3 class="mt-4 text-lg font-medium">Analysis Report</h3>
+                            <p class="mt-1 text-sm">Contradictions will be listed here after you run an analysis.</p>
+                        </div>
+                        <div id="loader" class="hidden flex-col items-center justify-center">
+                           <div class="loader"></div>
+                           <p class="mt-4 text-gray-400">AI is analyzing documents...</p>
+                        </div>
+                        <div id="report-content" class="hidden w-full">
+                            <!-- Report will be injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification for Pathway update -->
+    <div id="pathway-notification" class="hidden fixed bottom-5 right-5 bg-green-500 text-white py-3 px-5 rounded-lg shadow-lg flex items-center gap-3 animate-pulse">
+        <i data-lucide="bell-ring"></i>
+        <span>New Conflict Detected from Monitored URL!</span>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const fileInput1 = document.getElementById('file-input-1');
+        const fileDisplay1 = document.getElementById('file-display-1');
+        const fileInput2 = document.getElementById('file-input-2');
+        const fileDisplay2 = document.getElementById('file-display-2');
+        const fileInput3 = document.getElementById('file-input-3');
+        const fileDisplay3 = document.getElementById('file-display-3');
+        const analyzeButton = document.getElementById('analyze-button');
+        const errorMessage = document.getElementById('error-message');
+        
+        const resultsPanel = document.getElementById('results-panel');
+        const placeholder = document.getElementById('placeholder');
+        const loader = document.getElementById('loader');
+        const reportContent = document.getElementById('report-content');
+
+        const docsCheckedCountEl = document.getElementById('docs-checked-count');
+        const reportsMadeCountEl = document.getElementById('reports-made-count');
+        
+        const pathwayNotification = document.getElementById('pathway-notification');
+        
+        const addDocumentButton = document.getElementById('add-document-button');
+        const fileUploadContainer = document.getElementById('file-upload-container');
+        let fileInputCounter = 3;
+
+        let docsChecked = 0;
+        let reportsMade = 0;
+        let fileNames = {};
+
+        function updateFileName(input, display) {
+            input.addEventListener('change', () => {
+                const inputId = input.id.split('-')[2];
+                const fileName = input.files[0] ? input.files[0].name : `Upload Document ${inputId}`;
+                fileNames[inputId] = input.files[0] ? input.files[0].name : '';
+                
+                const fileIcon = '<i data-lucide="file-text" class="text-indigo-400"></i>';
+                display.innerHTML = `${fileIcon} <span class="truncate" title="${fileName}">${fileName}</span>`;
+                lucide.createIcons();
+            });
+        }
+
+        updateFileName(fileInput1, fileDisplay1);
+        updateFileName(fileInput2, fileDisplay2);
+        updateFileName(fileInput3, fileDisplay3);
+        
+        addDocumentButton.addEventListener('click', () => {
+            fileInputCounter++;
+            const newFileInputHTML = `
+                <div class="file-input-wrapper w-full bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-3 px-4 rounded-md transition-colors duration-300">
+                    <div class="file-input-display" id="file-display-${fileInputCounter}">
+                        <i data-lucide="upload-cloud"></i>
+                        <span>Upload Document ${fileInputCounter}</span>
+                    </div>
+                    <input type="file" id="file-input-${fileInputCounter}">
+                </div>
+            `;
+            fileUploadContainer.insertAdjacentHTML('beforeend', newFileInputHTML);
+            const newFileInput = document.getElementById(`file-input-${fileInputCounter}`);
+            const newFileDisplay = document.getElementById(`file-display-${fileInputCounter}`);
+            updateFileName(newFileInput, newFileDisplay);
+            lucide.createIcons();
+        });
+
+        function generateReportHTML() {
+            // This is a mocked report for demonstration
+            return `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-white">Analysis Report</h2>
+                    <button class="text-sm bg-gray-700 hover:bg-gray-600 px-3 py-1.5 rounded-md flex items-center gap-2">
+                        <i data-lucide="download" class="h-4 w-4"></i> Download
+                    </button>
+                </div>
+                <div class="space-y-4" id="contradictions-list">
+                    <!-- Contradiction 1 -->
+                    <div class="bg-gray-900/70 p-4 rounded-lg border border-gray-700">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="bg-red-500/20 text-red-400 font-bold text-xs px-2 py-1 rounded-full">CONTRADICTION</span>
+                            <h3 class="font-semibold text-white">Project Submission Deadline</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-gray-800 p-3 rounded-md">
+                                <p class="text-gray-400 mb-1 text-xs font-mono truncate">${fileNames['1'] || 'Project Guidelines.pdf'}</p>
+                                <p class="text-gray-200">"All project deliverables must be submitted via the portal <strong class="text-red-400">before 10 PM</strong> on the due date."</p>
+                            </div>
+                             <div class="bg-gray-800 p-3 rounded-md">
+                                <p class="text-gray-400 mb-1 text-xs font-mono truncate">${fileNames['2'] || 'General Rules.pdf'}</p>
+                                <p class="text-gray-200">"The official deadline for all academic submissions is <strong class="text-red-400">midnight (11:59 PM)</strong>."</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 bg-indigo-900/50 p-3 rounded-md">
+                            <p class="font-semibold text-indigo-300 text-sm flex items-center gap-2"><i data-lucide="lightbulb" class="h-4 w-4"></i>AI Suggestion</p>
+                            <p class="text-indigo-200 text-sm mt-1">To resolve this conflict, clarify the specific deadline for project submissions. Suggestion: "The general submission deadline is midnight, however, specific project deliverables are due by 10 PM as stated in the project guidelines."</p>
+                        </div>
+                    </div>
+                    <!-- Contradiction 2 -->
+                    <div class="bg-gray-900/70 p-4 rounded-lg border border-gray-700">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="bg-yellow-500/20 text-yellow-400 font-bold text-xs px-2 py-1 rounded-full">OVERLAP</span>
+                            <h3 class="font-semibold text-white">Notice Period</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-gray-800 p-3 rounded-md">
+                                <p class="text-gray-400 mb-1 text-xs font-mono truncate">${fileNames['2'] || 'HR Handbook.docx'}</p>
+                                <p class="text-gray-200">"Employees are required to provide a standard notice period of <strong class="text-yellow-400">2 weeks (14 days)</strong> upon resignation."</p>
+                            </div>
+                             <div class="bg-gray-800 p-3 rounded-md">
+                                <p class="text-gray-400 mb-1 text-xs font-mono truncate">${fileNames['3'] || 'Employment Contract.pdf'}</p>
+                                <p class="text-gray-200">"The employee agrees to a notice period of <strong class="text-yellow-400">1 calendar month</strong> before termination of employment."</p>
+                            </div>
+                        </div>
+                         <div class="mt-4 bg-indigo-900/50 p-3 rounded-md">
+                            <p class="font-semibold text-indigo-300 text-sm flex items-center gap-2"><i data-lucide="lightbulb" class="h-4 w-4"></i>AI Suggestion</p>
+                            <p class="text-indigo-200 text-sm mt-1">The employment contract takes legal precedence. Suggestion: Update the HR Handbook to state: "The standard notice period is 2 weeks, unless otherwise specified in your employment contract."</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-6">
+                    <button id="simulate-pathway-update" class="text-sm text-green-400 hover:text-green-300 bg-green-900/50 hover:bg-green-900 px-4 py-2 rounded-lg transition-colors">
+                        Simulate External Update (Pathway)
+                    </button>
+                </div>
+            `;
+        }
+        
+        function addNewConflict() {
+             const conflictHTML = `
+                <div class="bg-gray-900/70 p-4 rounded-lg border border-green-500 animate-pulse-fast">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="bg-green-500/20 text-green-400 font-bold text-xs px-2 py-1 rounded-full">NEW CONFLICT (FROM URL)</span>
+                        <h3 class="font-semibold text-white">Attendance Requirement</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-gray-800 p-3 rounded-md">
+                            <p class="text-gray-400 mb-1 text-xs font-mono truncate">${fileNames['1'] || 'Circular_A.pdf'}</p>
+                            <p class="text-gray-200">"A minimum attendance of <strong class="text-green-400">75%</strong> is mandatory to be eligible for final examinations."</p>
+                        </div>
+                         <div class="bg-gray-800 p-3 rounded-md">
+                            <p class="text-gray-400 mb-1 text-xs font-mono truncate">college.edu/policy-updates</p>
+                            <p class="text-gray-200">"Due to recent changes, the board has approved a revised minimum attendance of <strong class="text-green-400">65%</strong> for the current semester."</p>
+                        </div>
+                    </div>
+                     <div class="mt-4 bg-indigo-900/50 p-3 rounded-md">
+                        <p class="font-semibold text-indigo-300 text-sm flex items-center gap-2"><i data-lucide="lightbulb" class="h-4 w-4"></i>AI Suggestion</p>
+                        <p class="text-indigo-200 text-sm mt-1">The new policy from the monitored URL is the most current. Suggestion: Issue a new circular nullifying the old 75% rule and formally announcing the 65% requirement for the current semester.</p>
+                    </div>
+                </div>
+            `;
+            const list = document.getElementById('contradictions-list');
+            list.insertAdjacentHTML('beforeend', conflictHTML);
+            lucide.createIcons();
+            pathwayNotification.classList.remove('hidden');
+            setTimeout(() => { pathwayNotification.classList.add('hidden'); }, 4000);
+        }
+
+        analyzeButton.addEventListener('click', () => {
+            const fileInputs = fileUploadContainer.querySelectorAll('input[type="file"]');
+            const filesUploadedCount = Array.from(fileInputs).filter(input => input.files[0]).length;
+
+            if (filesUploadedCount < 2) {
+                errorMessage.textContent = 'Please upload at least two documents to analyze.';
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+            errorMessage.classList.add('hidden');
+            
+            // Start analysis
+            placeholder.classList.add('hidden');
+            reportContent.classList.add('hidden');
+            loader.classList.remove('hidden');
+            resultsPanel.classList.remove('border-dashed');
+
+            // Simulate AI processing time
+            setTimeout(() => {
+                // Update counters
+                docsChecked += filesUploadedCount;
+                reportsMade += 1;
+                docsCheckedCountEl.textContent = docsChecked;
+                reportsMadeCountEl.textContent = reportsMade;
+
+                // Show report
+                reportContent.innerHTML = generateReportHTML();
+                lucide.createIcons(); // Re-render icons
+                loader.classList.add('hidden');
+                reportContent.classList.remove('hidden');
+                
+                // Add event listener for the new button inside the report
+                 document.getElementById('simulate-pathway-update').addEventListener('click', addNewConflict);
+
+            }, 2500); // 2.5 seconds delay
+        });
+
+    </script>
+</body>
+</html>
+
